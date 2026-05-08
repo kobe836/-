@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>网约车权老司· 网约车租车平台</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --deep: #111318;
+    --card: #16191f;
+    --border: #252830;
+    --gold: #f5a623;
+    --gold-light: #ffc95c;
+    --gold-dim: rgba(245,166,35,0.12);
+    --white: #f0efe9;
+    --muted: #8a8d96;
+    --green: #2ecc71;
+    --red: #e74c3c;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Noto Sans SC', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 40px;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--white);
+  }
+
+  .nav-logo span { color: var(--gold); }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--gold);
+    color: var(--black) !important;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-cta:hover { background: var(--gold-light) !important; color: var(--black) !important; }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 120px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 50%, rgba(245,166,35,0.07) 0%, transparent 70%),
+                radial-gradient(ellipse 40% 40% at 10% 80%, rgba(245,166,35,0.04) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(245,166,35,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(245,166,35,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 100%);
+  }
+
+  .hero-content {
+    position: relative;
+    max-width: 700px;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold-dim);
+    border: 1px solid rgba(245,166,35,0.3);
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.3); }
+  }
+
+  .hero h1 {
+    font-size: clamp(42px, 6vw, 76px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -2px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 .gold { color: var(--gold); }
+
+  .hero p {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 40px;
+    font-weight: 400;
+    line-height: 1.8;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gold);
+    color: var(--black);
+    font-weight: 800;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(245,166,35,0.35);
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: rgba(245,166,35,0.4);
+    color: var(--gold);
+  }
+
+  .hero-stats {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: center;
+    min-width: 140px;
+  }
+
+  .stat-num {
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: 100px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .section-sub {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 500px;
+    line-height: 1.8;
+  }
+
+  .section-header {
+    margin-bottom: 56px;
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 0 40px;
+  }
+
+  /* ─── CARS ─── */
+  #cars { padding-top: 100px; }
+
+  .cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+  }
+
+  .car-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s;
+    position: relative;
+  }
+
+  .car-card:hover {
+    border-color: rgba(245,166,35,0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  }
+
+  .car-badge {
+    position: absolute;
+    top: 16px; left: 16px;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    z-index: 2;
+  }
+
+  .car-badge.hot { background: var(--red); color: white; }
+  .car-badge.new { background: var(--green); color: white; }
+
+  .car-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    background: linear-gradient(135deg, #1a1d24 0%, #0f1115 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .car-img::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 60px;
+    background: linear-gradient(transparent, var(--card));
+  }
+
+  .car-body {
+    padding: 20px 24px 24px;
+  }
+
+  .car-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .car-type {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .car-specs {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .spec {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .spec-val {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .spec-key {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .car-pricing {
+    background: var(--gold-dim);
+    border: 1px solid rgba(245,166,35,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+  }
+
+  .price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+  }
+
+  .price-row + .price-row {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(245,166,35,0.15);
+  }
+
+  .price-label { color: var(--muted); }
+
+  .price-val {
+    font-weight: 700;
+    color: var(--gold);
+    font-size: 15px;
+  }
+
+  .price-note {
+    font-size: 11px;
+    color: rgba(245,166,35,0.6);
+    font-weight: 400;
+  }
+
+  .car-cta {
+    width: 100%;
+    background: var(--gold);
+    color: var(--black);
+    font-weight: 800;
+    font-size: 14px;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    display: block;
+    text-decoration: none;
+  }
+
+  .car-cta:hover {
+    background: var(--gold-light);
+    transform: translateY(-1px);
+  }
+
+  /* ─── HOW IT WORKS ─── */
+  #how {
+    padding: 100px 40px;
+    background: var(--deep);
+    max-width: 100%;
+  }
+
+  #how .inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 56px;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: calc(12.5%);
+    right: calc(12.5%);
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), rgba(245,166,35,0.2));
+  }
+
+  .step {
+    padding: 0 24px;
+    text-align: center;
+  }
+
+  .step-num {
+    width: 56px; height: 56px;
+    background: var(--gold);
+    color: var(--black);
+    font-size: 20px;
+    font-weight: 900;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step:nth-child(n+2) .step-num {
+    background: var(--card);
+    border: 2px solid var(--border);
+    color: var(--gold);
+  }
+
+  .step h3 {
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .step p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ─── REFERRAL ─── */
+  #referral { padding: 100px 40px; }
+
+  .referral-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .referral-tiers {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .tier {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tier::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--border);
+  }
+
+  .tier.active::before { background: var(--gold); }
+  .tier.active { border-color: rgba(245,166,35,0.25); }
+
+  .tier:hover { transform: translateX(4px); }
+
+  .tier-icon {
+    font-size: 28px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold-dim);
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  .tier-info { flex: 1; }
+
+  .tier-name {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .tier-desc {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .tier-reward {
+    text-align: right;
+  }
+
+  .tier-amount {
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--gold);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+
+  .tier-unit {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .referral-info {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+  }
+
+  .referral-info h3 {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin-bottom: 20px;
+  }
+
+  .info-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .info-list li {
+    display: flex;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .info-list li::before {
+    content: '✓';
+    color: var(--gold);
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .highlight-box {
+    background: var(--gold-dim);
+    border: 1px solid rgba(245,166,35,0.25);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 13px;
+    color: var(--gold-light);
+    line-height: 1.7;
+  }
+
+  /* ─── TRUST MARKS ─── */
+  .trust-strip {
+    background: var(--deep);
+    padding: 40px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .trust-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .trust-icon {
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    background: var(--gold-dim);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .trust-text strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 800;
+    margin-bottom: 2px;
+  }
+
+  .trust-text span {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ─── CONTACT ─── */
+  #contact { padding: 100px 40px; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+
+  .contact-intro h2 {
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 900;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .contact-intro p {
+    font-size: 15px;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 32px;
+  }
+
+  .contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--white);
+  }
+
+  .contact-card:hover {
+    border-color: rgba(245,166,35,0.35);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  }
+
+  .contact-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+  }
+
+  .contact-icon.wechat { background: linear-gradient(135deg, #07C160, #05a350); }
+  .contact-icon.douyin { background: linear-gradient(135deg, #161823, #161823); border: 1px solid #333; }
+  .contact-icon.phone { background: linear-gradient(135deg, var(--gold), #e5940a); }
+
+  .contact-detail strong {
+    display: block;
+    font-size: 16px;
+    font-weight: 800;
+    margin-bottom: 3px;
+  }
+
+  .contact-detail span {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .contact-id {
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--gold-dim);
+    padding: 4px 12px;
+    border-radius: 100px;
+    white-space: nowrap;
+  }
+
+  /* ─── QR SECTION ─── */
+  .qr-section {
+    display: flex;
+    gap: 24px;
+    margin-top: 32px;
+    flex-wrap: wrap;
+  }
+
+  .qr-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    flex: 1;
+    min-width: 160px;
+  }
+
+  .qr-placeholder {
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 8px;
+    margin: 0 auto 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #333;
+    font-weight: 600;
+    padding: 8px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .qr-label {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .qr-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    padding: 40px;
+    text-align: center;
+  }
+
+  footer p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  footer .footer-logo {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+  }
+
+  footer .footer-logo span { color: var(--gold); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ─── FLOATING CTA ─── */
+  .floating-cta {
+    position: fixed;
+    bottom: 32px;
+    right: 32px;
+    background: var(--gold);
+    color: var(--black);
+    font-weight: 800;
+    font-size: 14px;
+    padding: 14px 22px;
+    border-radius: 100px;
+    box-shadow: 0 8px 32px rgba(245,166,35,0.4);
+    text-decoration: none;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    animation: floatBounce 3s ease-in-out infinite;
+  }
+
+  .floating-cta:hover {
+    background: var(--gold-light);
+    transform: scale(1.05);
+  }
+
+  @keyframes floatBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 20px 60px; }
+    .hero-stats { display: none; }
+    section { padding: 70px 20px; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps::before { display: none; }
+    .referral-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; }
+    .trust-inner { grid-template-columns: 1fr 1fr; }
+    .cars-grid { grid-template-columns: 1fr; }
+    #how { padding: 70px 20px; }
+    .trust-strip { padding: 30px 20px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 36px; letter-spacing: -1px; }
+    .steps { grid-template-columns: 1fr; }
+    .trust-inner { grid-template-columns: 1fr; }
+    .floating-cta { bottom: 20px; right: 20px; font-size: 13px; padding: 12px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">网约车权老司<span>·</span>租车</div>
+  <ul class="nav-links">
+    <li><a href="#cars">车型价格</a></li>
+    <li><a href="#how">怎么租</a></li>
+    <li><a href="#referral">推荐赚钱</a></li>
+    <li><a href="#contact" class="nav-cta">立即联系</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" style="max-width:100%; padding-left:40px; padding-right:40px;">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">正规合规 · 当天提车</div>
+    <h1>交<span class="gold">押金</span>拿车<br>7天后再<span class="gold">付租金</span></h1>
+    <p>先上路赚钱，再用收入交租。押金之外，7天内不收一分租金。<br>让你在掏钱之前，先看清楚这行能不能干。</p>
+    <div class="hero-actions">
+      <a href="#cars" class="btn-primary">↓ 查看车型价格</a>
+      <a href="#contact" class="btn-secondary">微信咨询</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-card">
+      <div class="stat-num">7天</div>
+      <div class="stat-label">租金缓冲期</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">当天</div>
+      <div class="stat-label">交押金提车</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num">0套路</div>
+      <div class="stat-label">合同全透明</div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST STRIP -->
+<div class="trust-strip">
+  <div class="trust-inner">
+    <div class="trust-item">
+      <div class="trust-icon">🔒</div>
+      <div class="trust-text">
+        <strong>押金只押押金</strong>
+        <span>全程打入平台账户，不过中间人</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">📄</div>
+      <div class="trust-text">
+        <strong>合同第一页写清楚</strong>
+        <span>无隐性费用，无小字埋伏</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">🚗</div>
+      <div class="trust-text">
+        <strong>随租随还</strong>
+        <span>无强制续租，提前还车无违约金</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon">⚡</div>
+      <div class="trust-text">
+        <strong>全平台可跑</strong>
+        <span>滴滴 / 曹操 / 高德等均支持</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CARS -->
+<section id="cars">
+  <div class="section-header fade-in">
+    <div class="section-label">在线车型</div>
+    <h2 class="section-title">当前可租车型</h2>
+    <p class="section-sub">以下为现有库存车型及最新报价，如需了解其他车型请直接联系。</p>
+  </div>
+
+  <div class="cars-grid">
+
+    <!-- Car 1 -->
+    <div class="car-card fade-in">
+      <span class="car-badge hot">热门</span>
+      <div class="car-img">🚗</div>
+      <div class="car-body">
+        <div class="car-name">比亚迪 秦 EV</div>
+        <div class="car-type">纯电 · 快车 · 全平台</div>
+        <div class="car-specs">
+          <div class="spec">
+            <div class="spec-val">续航 400/500km</div>
+            <div class="spec-key">NEDC</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">带运营证</div>
+            <div class="spec-key">车证状态</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">5座</div>
+            <div class="spec-key">座位</div>
+          </div>
+        </div>
+        <div class="car-pricing">
+          <div class="price-row">
+            <span class="price-label">押金</span>
+            <span class="price-val">¥3,000 <span class="price-note">（可退）</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">月租金</span>
+            <span class="price-val">¥2600 <span class="price-note">/ 月起</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">租金起付时间</span>
+            <span class="price-val" style="color:var(--green)">提车后第8天</span>
+          </div>
+        </div>
+        <a href="#contact" class="car-cta">立即咨询 / 预约提车</a>
+      </div>
+    </div>
+
+    <!-- Car 2 -->
+    <div class="car-card fade-in">
+      <span class="car-badge new">新到</span>
+      <div class="car-img">🚙</div>
+      <div class="car-body">
+        <div class="car-name">东风风神 E70</div>
+        <div class="car-type">纯电 · 快车 · 全平台</div>
+        <div class="car-specs">
+          <div class="spec">
+            <div class="spec-val">续航 530km</div>
+            <div class="spec-key">NEDC</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">带运营证</div>
+            <div class="spec-key">车证状态</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">5座</div>
+            <div class="spec-key">座位</div>
+          </div>
+        </div>
+        <div class="car-pricing">
+          <div class="price-row">
+            <span class="price-label">押金</span>
+            <span class="price-val">¥3,000 <span class="price-note">（可退）</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">月租金</span>
+            <span class="price-val">¥3000 <span class="price-note">/ 月起</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">租金起付时间</span>
+            <span class="price-val" style="color:var(--green)">提车后第8天</span>
+          </div>
+        </div>
+        <a href="#contact" class="car-cta">立即咨询 / 预约提车</a>
+      </div>
+    </div>
+
+    <!-- Car 3 -->
+    <div class="car-card fade-in">
+      <div class="car-img">🚕</div>
+      <div class="car-body">
+        <div class="car-name">吉利帝豪 EV</div>
+        <div class="car-type">纯电 · 快车 · 全平台</div>
+        <div class="car-specs">
+          <div class="spec">
+            <div class="spec-val">续航 400km</div>
+            <div class="spec-key">NEDC</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">带运营证</div>
+            <div class="spec-key">车证状态</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">5座</div>
+            <div class="spec-key">座位</div>
+          </div>
+        </div>
+        <div class="car-pricing">
+          <div class="price-row">
+            <span class="price-label">押金</span>
+            <span class="price-val">¥3,000 <span class="price-note">（可退）</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">月租金</span>
+            <span class="price-val">¥2600 <span class="price-note">/ 月起</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">租金起付时间</span>
+            <span class="price-val" style="color:var(--green)">提车后第8天</span>
+          </div>
+        </div>
+        <a href="#contact" class="car-cta">立即咨询 / 预约提车</a>
+      </div>
+    </div>
+
+    <!-- Car 4 -->
+    <div class="car-card fade-in">
+      <span class="car-badge" style="background:#6c5ce7;color:white;">专车</span>
+      <div class="car-img">🚐</div>
+      <div class="car-body">
+        <div class="car-name">丰田 BZ3</div>
+        <div class="car-type">纯电 · 专车 · 全平台</div>
+        <div class="car-specs">
+          <div class="spec">
+            <div class="spec-val">续航 517km</div>
+            <div class="spec-key">NEDC</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">带运营证</div>
+            <div class="spec-key">车证状态</div>
+          </div>
+          <div class="spec">
+            <div class="spec-val">5座</div>
+            <div class="spec-key">座位</div>
+          </div>
+        </div>
+        <div class="car-pricing">
+          <div class="price-row">
+            <span class="price-label">押金</span>
+            <span class="price-val">¥3,000 <span class="price-note">（可退）</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">月租金</span>
+            <span class="price-val">¥3050 <span class="price-note">/ 月起</span></span>
+          </div>
+          <div class="price-row">
+            <span class="price-label">租金起付时间</span>
+            <span class="price-val" style="color:var(--green)">提车后第8天</span>
+          </div>
+        </div>
+        <a href="#contact" class="car-cta">立即咨询 / 预约提车</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p style="margin-top:28px; font-size:13px; color:var(--muted); text-align:center;">
+    ⚠️ 以上价格为当前参考报价，实际以签约合同为准。车型及库存随时更新，请联系确认。
+  </p>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<div id="how">
+  <div class="inner">
+    <div class="section-header fade-in">
+      <div class="section-label">租车流程</div>
+      <h2 class="section-title">四步上路</h2>
+      <p class="section-sub">最快当天提车，最快当天开单赚钱。</p>
+    </div>
+    <div class="steps">
+      <div class="step fade-in">
+        <div class="step-num">1</div>
+        <h3>微信咨询</h3>
+        <p>告知你的证件情况和想要的车型，5分钟确认是否符合租车条件。</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">2</div>
+        <h3>签合同</h3>
+        <p>合同条款当面讲清楚，押金退还规则、提前还车规则全部白纸黑字。</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">3</div>
+        <h3>交押金提车</h3>
+        <p>押金支付到平台账户，当天验车，当天拿钥匙，当天可上线接单。</p>
+      </div>
+      <div class="step fade-in">
+        <div class="step-num">4</div>
+        <h3>第8天缴租</h3>
+        <p>提车后7天是你的缓冲期。先赚钱，第8天再用收入交第一笔租金。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- REFERRAL -->
+<section id="referral">
+  <div class="section-header fade-in">
+    <div class="section-label">推荐计划</div>
+    <h2 class="section-title">推荐一个人<br>你拿现金</h2>
+    <p class="section-sub">口碑是最好的广告。你推荐的人成功租车，钱直接到你手里，没有积分，没有套路。</p>
+  </div>
+
+  <div class="referral-grid">
+    <div class="referral-tiers fade-in">
+
+      <div class="tier active">
+        <div class="tier-icon">👤</div>
+        <div class="tier-info">
+          <div class="tier-name">推荐1人成功租车</div>
+          <div class="tier-desc">对方完成签约并提车即结算</div>
+        </div>
+        <div class="tier-reward">
+          <div class="tier-amount">¥600</div>
+          <div class="tier-unit">现金到账</div>
+        </div>
+      </div>
+
+      <div class="tier active">
+        <div class="tier-icon">👥</div>
+        <div class="tier-info">
+          <div class="tier-name">推荐2人成功租车</div>
+          <div class="tier-desc">当月累计满2单额外加奖</div>
+        </div>
+        <div class="tier-reward">
+          <div class="tier-amount">¥800</div>
+          <div class="tier-unit">合计（含加奖200）</div>
+        </div>
+      </div>
+
+      <div class="tier active">
+        <div class="tier-icon">🏆</div>
+        <div class="tier-info">
+          <div class="tier-name">推荐5人及以上</div>
+          <div class="tier-desc">当月累计满5单，享最高返佣</div>
+        </div>
+        <div class="tier-reward">
+          <div class="tier-amount">¥1000+</div>
+          <div class="tier-unit">联系详谈</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="referral-info fade-in">
+      <h3>推荐规则说清楚</h3>
+      <ul class="info-list">
+        <li>被推荐人完成签约并成功提车，即视为有效推荐，无需等待其跑够多少流水</li>
+        <li>奖励在被推荐人提车后20个工作日内结算，微信直接转账</li>
+        <li>推荐人数不设上限，当月推荐越多，单笔奖励递增</li>
+        <li>被推荐人享有和直接联系完全相同的租车条件，你的人不会被薄待</li>
+        <li>推荐记录保留6个月，介绍后对方晚些来租车同样有效</li>
+      </ul>
+      <div class="highlight-box">
+        💡 很多老司机一个月推荐3到5个认识的人，光推荐奖励就能覆盖自己一半的月租。这不是副业，是你本来就有的资源。
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header fade-in">
+    <div class="section-label">联系我</div>
+    <h2 class="section-title">今天联系<br>今天提车</h2>
+  </div>
+
+  <div class="contact-grid">
+    <div class="contact-cards fade-in">
+
+      <a href="weixin://" class="contact-card">
+        <div class="contact-icon wechat">💬</div>
+        <div class="contact-detail">
+          <strong>微信</strong>
+          <span>加我微信，5分钟内回复</span>
+        </div>
+        <div class="contact-id">微信号：<strong>13360307637</strong></div>
+      </a>
+
+      <a href="https://www.douyin.com" target="_blank" class="contact-card">
+        <div class="contact-icon douyin" style="font-size:22px;">🎵</div>
+        <div class="contact-detail">
+          <strong>抖音</strong>
+          <span>搜索账号查看真实司机案例</span>
+        </div>
+        <div class="contact-id">SJ133_60307637</div>
+      </a>
+
+      <a href="https://channels.weixin.qq.com" target="_blank" class="contact-card">
+        <div class="contact-icon" style="background:linear-gradient(135deg,#1aad19,#0d8a0c);">📺</div>
+        <div class="contact-detail">
+          <strong>视频号</strong>
+          <span>每周更新司机真实收入报告</span>
+        </div>
+        <div class="contact-id">sph6X6K3bOvtzG4</div>
+      </a>
+
+      <a href="tel:+86XXXXXXXXXX" class="contact-card">
+        <div class="contact-icon phone">📞</div>
+        <div class="contact-detail">
+          <strong>电话 / 微信同号</strong>
+          <span>工作时间：每天 8:00 – 22:00</span>
+        </div>
+        <div class="contact-id">13360307637</div>
+      </a>
+
+    </div>
+
+    <div class="fade-in">
+      <div class="qr-section">
+        <div class="qr-card">
+          <div class="qr-placeholder">微信<br>二维码<br>（）</div>
+          <div class="qr-label">微信扫码</div>
+          <div class="qr-sub">添加好友直接咨询</div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-placeholder">抖音<br>二维码<br>（替换此处）</div>
+          <div class="qr-label">抖音扫码</div>
+          <div class="qr-sub">查看真实司机案例</div>
+        </div>
+        <div class="qr-card">
+          <div class="qr-placeholder">视频号<br>二维码<br>（替换此处）</div>
+          <div class="qr-label">视频号</div>
+          <div class="qr-sub">关注每周收入报告</div>
+        </div>
+      </div>
+
+      <div style="margin-top:24px; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px;">
+        <p style="font-size:13px; color:var(--muted); line-height:1.9;">
+          📍 <strong style="color:var(--white);">地址：</strong>佛山<br>
+          🕐 <strong style="color:var(--white);">提车时间：</strong>周一至周日 9:00 – 20:00<br>
+          🧾 <strong style="color:var(--white);">所需证件：</strong>驾照 · 身份证 
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">跑起来<span>·</span>租车</div>
+  <p>押金起步 · 7天缓冲 · 透明合同 · 随租随还</p>
+  <p style="margin-top:12px; font-size:12px; color:#444;">© 2025 跑起来租车 · 本页内容仅供参考，实际条款以签订合同为准</p>
+</footer>
+
+<!-- FLOATING CTA -->
+<a href="#contact" class="floating-cta">💬 立即咨询</a>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Stagger car cards
+  document.querySelectorAll('.car-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 80}ms`;
+  });
+
+  // Nav scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.background = window.scrollY > 40
+      ? 'rgba(10,10,10,0.97)'
+      : 'rgba(10,10,10,0.85)';
+  });
+</script>
+</body>
+</html>
